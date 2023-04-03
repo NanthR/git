@@ -1996,6 +1996,24 @@ test_expect_success 'sparse index is not expanded: rm' '
 	ensure_not_expanded rm -r deep
 '
 
+test_expect_success 'sparse index is not expanded: diff-index' '
+	init_repos &&
+
+	echo "new" >>sparse-index/g &&
+	git -C sparse-index add g &&
+	git -C sparse-index commit -m "dummy" &&
+	ensure_not_expanded diff-index HEAD~1
+'
+
+test_expect_success 'match all: diff-index' '
+	init_repos &&
+
+	test_all_match git diff-index HEAD &&
+	run_on_all rm g &&
+	test_all_match git diff-index HEAD &&
+	test_all_match git diff-index HEAD --cached
+'
+
 test_expect_success 'grep with and --cached' '
 	init_repos &&
 
